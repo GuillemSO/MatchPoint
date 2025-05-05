@@ -1,0 +1,20 @@
+# Usa una imagen base de Python
+FROM python:3.12
+
+# Establecer el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiar los archivos necesarios (ejemplo: requirements.txt y tu código)
+COPY requirements.txt /app/
+
+# Instalar las dependencias
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar el código de tu proyecto
+COPY . /app/
+
+# Exponer el puerto por el que se ejecutará la app (por defecto 8000 para Django)
+EXPOSE 8000
+
+# Comando para ejecutar el servidor de Django (asegurándose de que las migraciones están hechas)
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

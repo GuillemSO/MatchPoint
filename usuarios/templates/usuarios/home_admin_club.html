@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block content %}
+<div class="max-w-4xl mx-auto p-6 bg-white rounded shadow">
+  <h1 class="text-2xl font-bold mb-4">Bienvenido, {{ user.nombre }}</h1>
+
+  {% if club %}
+  <div class="mb-6">
+    <h2 class="text-xl font-semibold">Tu Club: {{ club.nombre }}</h2>
+    <p><strong>Dirección:</strong> {{ club.direccion }}</p>
+    <p><strong>Teléfono:</strong> {{ club.telefono }}</p>
+    <p><strong>Email:</strong> {{ club.email_contacto }}</p>
+    <div class="mt-2">
+      <a href="{% url 'club-update' club.id %}" class="text-blue-600"
+        >Editar Club</a
+      >
+      |
+      <a href="{% url 'club-delete' club.id %}" class="text-red-600"
+        >Eliminar Club</a
+      >
+    </div>
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold mb-2">Pistas del Club</h2>
+    <a
+      href="{% url 'pista-create' %}"
+      class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+      >Crear Nueva Pista</a
+    >
+    <ul class="mt-4 space-y-2">
+      {% for pista in pistas %}
+      <li class="border p-3 rounded">
+        <strong>{{ pista.nombre }}</strong> - {{ pista.tipo_pista.nombre }} - {{
+        pista.estado_pista.nombre }} - {{ pista.precio }}€
+        <div>
+          <a href="{% url 'pista-update' pista.id %}" class="text-blue-600"
+            >Editar</a
+          >
+          |
+          <a href="{% url 'pista-delete' pista.id %}" class="text-red-600"
+            >Eliminar</a
+          >
+        </div>
+      </li>
+      {% empty %}
+      <p>No hay pistas registradas aún.</p>
+      {% endfor %}
+    </ul>
+  </div>
+  {% else %}
+  <p>No has registrado ningún club aún.</p>
+  <a href="{% url 'club-create' %}" class="text-blue-600">Crear tu club</a>
+  {% endif %}
+</div>
+{% endblock %}
