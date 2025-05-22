@@ -1,0 +1,33 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mx-auto px-4 py-10">
+  <h1
+    class="text-4xl font-bold text-[#0F172A] mb-8 border-b-2 border-[#68D391] pb-2"
+  >
+    Detalle del Usuario
+  </h1>
+
+  <div class="bg-white shadow-lg rounded-lg p-6">
+    <p class="mb-4">
+      <strong class="text-[#2C5282]">Nombre:</strong> {{ usuario.nombre }}
+    </p>
+    <p class="mb-4">
+      <strong class="text-[#2C5282]">Email:</strong> {{ usuario.email }}
+    </p>
+    <p class="mb-4">
+      <strong class="text-[#2C5282]">Nivel de Pádel:</strong> {{
+      usuario.nivel_padel }}
+    </p>
+    <p class="mb-4">
+      <strong class="text-[#2C5282]">Tipo de Usuario:</strong> {{
+      usuario.tipo_usuario.nombre }}
+    </p>
+
+    <a
+      href="{% url 'usuario-list' %}"
+      class="inline-block mt-6 bg-[#3182CE] hover:bg-[#2B6CB0] text-white py-2 px-4 rounded-full shadow transition"
+    >
+      Volver a la lista
+    </a>
+  </div>
+</div>
+{% endblock %}

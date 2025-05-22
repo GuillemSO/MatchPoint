@@ -1,0 +1,67 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mx-auto px-4 py-10">
+  <h1
+    class="text-4xl font-bold text-[#0F172A] mb-8 border-b-2 border-[#68D391] pb-2"
+  >
+    Gestión de Clubs
+  </h1>
+
+  <div class="mb-6">
+    <a
+      href="{% url 'club-create' %}"
+      class="inline-block bg-[#38A169] hover:bg-[#2F855A] text-white font-medium py-2 px-5 rounded-full shadow-md transition"
+    >
+      + Nuevo Club
+    </a>
+  </div>
+
+  <div class="overflow-x-auto rounded-lg shadow-lg">
+    <table class="min-w-full bg-white rounded-lg overflow-hidden">
+      <thead
+        class="bg-[#E6FFFA] text-[#2C7A7B] text-sm uppercase tracking-wide"
+      >
+        <tr>
+          <th class="py-3 px-4 text-left">Nombre</th>
+          <th class="py-3 px-4 text-left">Dirección</th>
+          <th class="py-3 px-4 text-left">Teléfono</th>
+          <th class="py-3 px-4 text-left">Email de Contacto</th>
+          <th class="py-3 px-4 text-left">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-700">
+        {% for club in clubs %}
+        <tr class="border-t hover:bg-[#F7FAFC] transition">
+          <td class="py-3 px-4">{{ club.nombre }}</td>
+          <td class="py-3 px-4">{{ club.direccion }}</td>
+          <td class="py-3 px-4">{{ club.telefono }}</td>
+          <td class="py-3 px-4">{{ club.email_contacto }}</td>
+          <td class="py-3 px-4 space-x-2">
+            <a
+              href="{% url 'club-detail' club.id %}"
+              class="bg-[#3182CE] hover:bg-[#2B6CB0] text-white py-1 px-3 rounded-full text-sm transition"
+              >Ver</a
+            >
+            <a
+              href="{% url 'club-update' club.id %}"
+              class="bg-[#D69E2E] hover:bg-[#B7791F] text-white py-1 px-3 rounded-full text-sm transition"
+              >Editar</a
+            >
+            <a
+              href="{% url 'club-delete' club.id %}"
+              class="bg-[#E53E3E] hover:bg-[#C53030] text-white py-1 px-3 rounded-full text-sm transition"
+              >Eliminar</a
+            >
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="py-6 px-4 text-center text-gray-500">
+            No hay clubs registrados actualmente.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

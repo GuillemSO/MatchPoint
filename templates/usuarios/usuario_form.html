@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-lg">
+  <h1 class="text-2xl font-bold mb-6">
+    {% if usuario %}Editar Usuario{% else %}Crear Usuario{% endif %}
+  </h1>
+  <form method="post">
+    {% csrf_token %}
+    <label class="block mb-2 font-semibold">Nombre</label>
+    <input type="text" name="nombre" class="w-full border rounded p-2 mb-4" value="{{ usuario.nombre|default:'' }}" required />
+
+    <label class="block mb-2 font-semibold">Email</label>
+    <input type="email" name="email" class="w-full border rounded p-2 mb-4" value="{{ usuario.email|default:'' }}" required />
+
+    <label class="block mb-2 font-semibold">Contraseña</label>
+    <input type="password" name="contraseña" class="w-full border rounded p-2 mb-4" value="{{ usuario.contraseña|default:'' }}" required />
+
+    <label class="block mb-2 font-semibold">Nivel Pádel</label>
+    <input type="number" step="0.1" min="0" max="9.9" name="nivel_padel" class="w-full border rounded p-2 mb-4" value="{{ usuario.nivel_padel|default:'' }}" />
+
+    <label class="block mb-2 font-semibold">Foto Perfil URL</label>
+    <input type="text" name="foto_perfil_url" class="w-full border rounded p-2 mb-4" value="{{ usuario.foto_perfil_url|default:'' }}" />
+
+    <label class="block mb-2 font-semibold">Tipo Usuario</label>
+    <select name="tipo_usuario" class="w-full border rounded p-2 mb-6" required>
+      {% for tipo in tipos %}
+      <option value="{{ tipo.id }}" {% if usuario and usuario.tipo_usuario.id == tipo.id %}selected{% endif %}>{{ tipo.nombre }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 w-full">
+      Guardar
+    </button>
+  </form>
+</div>
+{% endblock %}

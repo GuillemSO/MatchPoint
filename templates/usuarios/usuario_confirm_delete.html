@@ -1,0 +1,24 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mx-auto px-4 py-8 max-w-lg">
+  <h1 class="text-2xl font-bold mb-6">Eliminar Usuario</h1>
+  <p>
+    ¿Estás seguro que quieres eliminar al usuario
+    <strong>{{ usuario.nombre }}</strong>?
+  </p>
+
+  <form method="post" class="mt-4">
+    {% csrf_token %}
+    <button
+      type="submit"
+      class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700"
+    >
+      Eliminar
+    </button>
+    <a
+      href="{% url 'usuario-list' %}"
+      class="ml-4 text-gray-700 hover:underline"
+      >Cancelar</a
+    >
+  </form>
+</div>
+{% endblock %}

@@ -17,19 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from usuarios.views import UsuarioViewSet
+from app.usuarios.views import UsuarioViewSet
 from rest_framework import routers
-from usuarios.views import UsuarioViewSet
-from clubs.views import ClubViewSet
-from estado_pista.views import EstadoPistaViewSet
-from estado_reserva.views import EstadoReservaViewSet
-from invitaciones.views import InvitacionesViewSet
-from partidos.views import PartidoViewSet
-from pistas.views import PistaViewSet
-from resultados.views import ResultadoPartidoViewSet
-from tipo_pista.views import TipoPistaViewSet
-from tipo_usuario.views import TipoUsuarioViewSet
-from usuarios.views import home_view
+from app.usuarios.views import UsuarioViewSet
+from app.clubs.views import ClubViewSet
+from app.estado_pista.views import EstadoPistaViewSet
+from app.estado_reserva.views import EstadoReservaViewSet
+from app.invitaciones.views import InvitacionesViewSet
+from app.partidos.views import PartidoViewSet
+from app.pistas.views import PistaViewSet
+from app.resultados.views import ResultadoPartidoViewSet
+from app.tipo_pista.views import TipoPistaViewSet
+from app.tipo_usuario.views import TipoUsuarioViewSet
+from app.usuarios.views import home_view
 
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -57,9 +57,10 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path('manager/clubs/', include('clubs.urls')),
-    path('', include('usuarios.urls')),
-    path('pistas/', include('pistas.urls')),
+    path('manager/clubs/', include('app.clubs.urls')),
+    path('', include('app.usuarios.urls')),
+    path('pistas/', include('app.pistas.urls')),
+    path('usuarios/', include('app.usuarios.urls')),
 ]
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView

@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% block content %}
+<div
+  class="flex items-center justify-center h-screen bg-cover bg-center"
+  style="background-image: url('../../login.jpg')"
+>
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">Iniciar sesión</h2>
+    {% if messages %}
+    <div class="text-red-500 mb-4">
+      {% for message in messages %}
+      <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-4">
+        <label class="block mb-1">Correo electrónico</label>
+        <input
+          type="email"
+          name="email"
+          class="w-full border border-gray-300 rounded p-2"
+          required
+        />
+      </div>
+      <div class="mb-6">
+        <label class="block mb-1">Contraseña</label>
+        <input
+          type="password"
+          name="contraseña"
+          class="w-full border border-gray-300 rounded p-2"
+          required
+        />
+      </div>
+      <button
+        type="submit"
+        class="bg-green-600 text-white py-2 px-4 rounded w-full hover:bg-blue-700"
+      >
+        Entrar
+      </button>
+      <p class="mt-4 text-center">
+        ¿No tienes cuenta?
+        <a href="{% url 'registro' %}" class="text-blue-600 underline"
+          >Regístrate</a
+        >
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}

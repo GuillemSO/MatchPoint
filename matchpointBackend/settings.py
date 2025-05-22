@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -23,10 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)jfo%riwa5vcs$u%-nxorjg!i6nd!=sjhq-vtb(&kl5im%odub'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -38,16 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'clubs',
-    'estado_pista',
-    'estado_reserva',
-    'invitaciones',
-    'partidos',
-    'pistas',
-    'resultados',
-    'tipo_pista',
-    'tipo_usuario',
-    'usuarios',
+    'app.clubs',
+    'app.estado_pista',
+    'app.estado_reserva',
+    'app.invitaciones',
+    'app.partidos',
+    'app.pistas',
+    'app.resultados',
+    'app.tipo_pista',
+    'app.tipo_usuario',
+    'app.usuarios',
     'drf_spectacular',
     'rest_framework_simplejwt'
 ]
@@ -67,10 +67,13 @@ ROOT_URLCONF = 'matchpointBackend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Para encontrar el base.html
-        'APP_DIRS': True,  # Para encontrar templates en las apps
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),  
+        ],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -164,3 +167,6 @@ SPECTACULAR_SETTINGS = {
 
 
 LOGIN_URL = '/login/'
+
+# settings.py
+STATICFILES_DIRS = [BASE_DIR / "static"]

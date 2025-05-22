@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block content %}
+
+<div
+  class="w-full min-h-screen bg-cover bg-center flex items-center justify-center"
+  style="background-image: url('/static/image.jpg')"
+>
+  <div
+    class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl text-center backdrop-blur-sm bg-opacity-90"
+  >
+    <h2 class="text-3xl font-bold text-[#0F172A] mb-2">
+      Bienvenido, {{ usuario.nombre }}
+    </h2>
+    <p class="text-[#4A5568] mb-6 uppercase tracking-wide">
+      Backoffice Administrativo
+    </p>
+
+    <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+      <a
+        href="{% url 'club-list' %}"
+        class="inline-block bg-[#38A169] hover:bg-[#2F855A] text-white py-2 px-6 rounded-full font-medium transition"
+      >
+        Gestionar Clubes
+      </a>
+      <a
+        href="{% url 'usuario-list' %}"
+        class="inline-block bg-[#3182CE] hover:bg-[#2B6CB0] text-white py-2 px-6 rounded-full font-medium transition"
+      >
+        Gestionar Usuarios
+      </a>
+    </div>
+
+    <form method="post" action="{% url 'logout' %}" class="mt-6">
+      {% csrf_token %}
+      <button class="text-[#E53E3E] hover:underline font-semibold">
+        Cerrar sesión
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
