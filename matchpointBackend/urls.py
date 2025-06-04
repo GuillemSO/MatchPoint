@@ -30,6 +30,8 @@ from app.resultados.views import ResultadoPartidoViewSet
 from app.tipo_pista.views import TipoPistaViewSet
 from app.tipo_usuario.views import TipoUsuarioViewSet
 from app.usuarios.views import home_view
+from django.urls import path, include
+from app.usuarios.views import login_view, logout_view
 
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -53,14 +55,12 @@ router.register(r'tipo_usuario', TipoUsuarioViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path('manager/clubs/', include('app.clubs.urls')),
-    path('', include('app.usuarios.urls')),
-    path('pistas/', include('app.pistas.urls')),
+    path('', login_view, name='home_redirect'), 
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
     path('usuarios/', include('app.usuarios.urls')),
+    path('clubs/', include('app.clubs.urls')),
+    path('pistas/', include('app.pistas.urls')),
 ]
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView

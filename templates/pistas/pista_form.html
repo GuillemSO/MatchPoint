@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-lg">
+  <h1 class="text-2xl font-bold mb-6">
+    {% if pista %}Editar Pista{% else %}Crear Pista{% endif %}
+  </h1>
+  <form method="post">
+    {% csrf_token %}
+
+    <label class="block mb-2 font-semibold">Nombre</label>
+    <input
+      type="text"
+      name="nombre"
+      class="w-full border rounded p-2 mb-4"
+      value="{{ pista.nombre|default:'' }}"
+      required
+    />
+
+    <label class="block mb-2 font-semibold">Precio por hora</label>
+    <input
+      type="number"
+      step="0.01"
+      name="precio"
+      class="w-full border rounded p-2 mb-4"
+      value="{{ pista.precio|default:'' }}"
+      required
+    />
+
+    <label class="block mb-2 font-semibold">Tipo de Pista</label>
+    <div class="mb-4">
+        <label class="inline-flex items-center mr-4">
+            <input
+                type="radio"
+                name="tipo_pista"
+                value="individual"
+                {% if tipo_pista and tipo_pista.individual %}checked{% endif %}
+            />
+            <span class="ml-2">Individual</span>
+            </label>
+            <label class="inline-flex items-center">
+            <input
+                type="radio"
+                name="tipo_pista"
+                value="doble"
+                {% if tipo_pista and tipo_pista.doble %}checked{% endif %}
+            />
+            <span class="ml-2">Doble</span>
+        </label>
+    </div>
+
+    <label class="block mb-2 font-semibold">Estado de Pista</label>
+    <select name="estado_pista" class="w-full border rounded p-2 mb-6" required>
+    {% for estado in estados_pista %}
+        <option value="{{ estado.id }}" {% if pista and pista.estado_pista.id == estado.id %}selected{% endif %}>
+        {{ estado.estado }}
+        </option>
+    {% endfor %}
+    </select>
+
+
+    <button
+      type="submit"
+      class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 w-full"
+    >
+      Guardar
+    </button>
+  </form>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base_home" %} {% block content %}
 <div class="max-w-4xl mx-auto p-6 bg-white rounded shadow">
   <h1 class="text-2xl font-bold mb-4">Bienvenido, {{ user.nombre }}</h1>
 
@@ -29,8 +29,10 @@
     <ul class="mt-4 space-y-2">
       {% for pista in pistas %}
       <li class="border p-3 rounded">
-        <strong>{{ pista.nombre }}</strong> - {{ pista.tipo_pista.nombre }} - {{
-        pista.estado_pista.nombre }} - {{ pista.precio }}€
+        <strong>{{ pista.nombre }}</strong> - {% if pista.tipo_pista.doble %}
+        Doble {% elif pista.tipo_pista.individual %} Individual {% else %} Sin
+        tipo definido {% endif %} - {{ pista.estado_pista.estado }} -
+        <strong> {{ pista.precio }} €</strong>
         <div>
           <a href="{% url 'pista-update' pista.id %}" class="text-blue-600"
             >Editar</a

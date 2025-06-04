@@ -1,24 +1,150 @@
-{% extends 'base.html' %} {% block content %}
-<div class="max-w-2xl mx-auto px-4 py-8">
-  <h1 class="text-2xl font-bold text-gray-800 mb-6">
-    {% if object %}Editar{% else %}Crear{% endif %} Club
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-lg">
+  <h1 class="text-2xl font-bold mb-6">
+    {% if club %}Editar Club{% else %}Crear Club{% endif %}
   </h1>
+  
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    
+    <!-- Nombre del Club -->
+    <div>
+      <label class="block mb-2 font-semibold text-gray-700">Nombre del Club</label>
+      <input 
+        type="text" 
+        name="nombre" 
+        class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#38A169] focus:border-transparent transition" 
+        value="{{ club.nombre|default:'' }}" 
+        placeholder="Ej: Club Deportivo Las Raquetas"
+        required 
+      />
+    </div>
 
-  <form method="post" class="bg-white shadow-md rounded-lg p-6 space-y-4">
-    {% csrf_token %} {{ form.as_p }}
-    <div class="flex justify-end space-x-4">
-      <a
-        href="{% url 'club-list' %}"
-        class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-        >Cancelar</a
+    <!-- Dirección -->
+    <div>
+      <label class="block mb-2 font-semibold text-gray-700">Dirección</label>
+      <input 
+        type="text" 
+        name="direccion" 
+        class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#38A169] focus:border-transparent transition" 
+        value="{{ club.direccion|default:'' }}" 
+        placeholder="Ej: Calle Mayor 123, Madrid"
+        required 
+      />
+    </div>
+
+    <!-- Teléfono -->
+    <div>
+      <label class="block mb-2 font-semibold text-gray-700">Teléfono</label>
+      <input 
+        type="tel" 
+        name="telefono" 
+        class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#38A169] focus:border-transparent transition" 
+        value="{{ club.telefono|default:'' }}" 
+        placeholder="Ej: +34 600 123 456"
+        pattern="[+]?[0-9\s\-\(\)]+"
+        required 
+      />
+      <small class="text-gray-500 text-sm">Formato: +34 600 123 456</small>
+    </div>
+
+    <!-- Email de Contacto -->
+    <div>
+      <label class="block mb-2 font-semibold text-gray-700">Email de Contacto</label>
+      <input 
+        type="email" 
+        name="email_contacto" 
+        class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#38A169] focus:border-transparent transition" 
+        value="{{ club.email_contacto|default:'' }}" 
+        placeholder="Ej: contacto@clubpadel.com"
+        required 
+      />
+    </div>
+
+    <!-- Usuario Responsable -->
+    <div>
+      <label class="block mb-2 font-semibold text-gray-700">Usuario Responsable</label>
+      <select 
+        name="usuario" 
+        class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#38A169] focus:border-transparent transition bg-white" 
+        required
       >
-      <button
-        type="submit"
-        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        <option value="">Selecciona un usuario responsable</option>
+        {% for usuario in usuarios %}
+        <option 
+          value="{{ usuario.id }}" 
+          {% if club and club.usuario.id == usuario.id %}selected{% endif %}
+        >
+          {{ usuario.nombre }} ({{ usuario.email }})
+        </option>
+        {% endfor %}
+      </select>
+      <small class="text-gray-500 text-sm">Usuario que será responsable de la gestión del club</small>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex space-x-4 pt-4">
+      <button 
+        type="submit" 
+        class="flex-1 bg-[#38A169] hover:bg-[#2F855A] text-white py-3 px-6 rounded-md font-medium transition duration-200 shadow-md hover:shadow-lg"
       >
-        Guardar
+        {% if club %}Actualizar Club{% else %}Crear Club{% endif %}
       </button>
+      
+      <a 
+        href="{% url 'club-list' %}" 
+        class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-md font-medium transition duration-200 shadow-md hover:shadow-lg text-center"
+      >
+        Cancelar
+      </a>
     </div>
   </form>
+
+  <!-- Información adicional para edición -->
+  {% if club %}
+  <div class="mt-8 p-4 bg-[#F7FAFC] rounded-lg border border-[#E2E8F0]">
+    <h3 class="font-semibold text-[#2C7A7B] mb-2">Información del Club</h3>
+    <p class="text-sm text-gray-600">
+      <strong>Creado:</strong> {{ club.created_at|date:"d/m/Y H:i"|default:"Fecha no disponible" }}
+    </p>
+    {% if club.updated_at %}
+    <p class="text-sm text-gray-600">
+      <strong>Última modificación:</strong> {{ club.updated_at|date:"d/m/Y H:i" }}
+    </p>
+    {% endif %}
+  </div>
+  {% endif %}
 </div>
+
+<style>
+/* Estilos adicionales para mejorar la experiencia */
+input:focus, select:focus {
+  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.1);
+}
+
+.container form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .flex.space-x-4 {
+    flex-direction: column;
+    space-x: 0;
+  }
+  
+  .flex.space-x-4 > * + * {
+    margin-top: 0.5rem;
+  }
+}
+</style>
 {% endblock %}

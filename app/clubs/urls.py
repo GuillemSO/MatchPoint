@@ -1,10 +1,12 @@
 from django.urls import path
-from .views import ClubListView, ClubDetailView, ClubCreateView, ClubUpdateView, ClubDeleteView
+from . import views
 
 urlpatterns = [
-    path('', ClubListView.as_view(), name='club-list'),
-    path('<int:pk>/', ClubDetailView.as_view(), name='club-detail'),
-    path('nuevo/', ClubCreateView.as_view(), name='club-create'),
-    path('<int:pk>/editar/', ClubUpdateView.as_view(), name='club-update'),
-    path('<int:pk>/eliminar/', ClubDeleteView.as_view(), name='club-delete'),
+    path('', views.club_list_manager, name='club-list'),  # Aquí debe estar 'club-list'
+    path('manager/list/', views.club_list_manager, name='club-list-manager'),
+    path('admin/list/', views.club_list_admin, name='club-list-admin'),
+    path('detail/<int:pk>/', views.club_detail, name='club-detail'),
+    path('create/', views.club_create, name='club-create'),
+    path('update/<int:pk>/', views.club_update, name='club-update'),
+    path('delete/<int:pk>/', views.club_delete, name='club-delete'),
 ]

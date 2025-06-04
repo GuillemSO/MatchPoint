@@ -1,0 +1,22 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mx-auto px-4 py-8 max-w-lg text-center">
+  <h1 class="text-2xl font-bold mb-6">¿Estás seguro de eliminar esta pista?</h1>
+  <p class="mb-4 text-lg">{{ pista.nombre }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button
+      type="submit"
+      class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 mr-4"
+    >
+      Sí, eliminar
+    </button>
+    <a
+      href="{% url 'home_admin_club' %}"
+      class="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500"
+    >
+      Cancelar
+    </a>
+  </form>
+</div>
+{% endblock %}

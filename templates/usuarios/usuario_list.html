@@ -1,11 +1,22 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container mx-auto px-4 py-10">
   <h1
-    class="text-4xl font-bold text-[#0F172A] mb-8 border-b-2 border-[#68D391] pb-2"
+    class="text-4xl font-bold text-[#0F172A] mb-4 border-b-2 border-[#68D391] pb-2"
   >
     Gestión de Usuarios
   </h1>
 
+  <!-- Contador de usuarios -->
+  <div class="mb-6">
+    <p class="text-lg text-[#2C7A7B] font-medium">
+      Total de usuarios:
+      <span class="font-bold text-[#38A169]" id="usuario-count"
+        >{{ usuarios|length }}</span
+      >
+    </p>
+  </div>
+
+  <!-- Botón Nuevo Usuario -->
   <div class="mb-6">
     <a
       href="{% url 'usuario-create' %}"
@@ -13,6 +24,91 @@
     >
       + Nuevo Usuario
     </a>
+  </div>
+
+  <!-- Filtros y Buscador -->
+  <div class="mb-6 bg-[#F7FAFC] p-4 rounded-lg shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+      <!-- Buscador por nombre -->
+      <div>
+        <label
+          for="search-usuario"
+          class="block text-sm font-medium text-[#2C7A7B] mb-2"
+        >
+          Buscar usuario:
+        </label>
+        <input
+          type="text"
+          id="search-usuario"
+          placeholder="Buscar por nombre..."
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#38A169] focus:border-transparent"
+        />
+      </div>
+
+      <!-- Filtro por nivel de pádel -->
+      <div>
+        <label
+          for="filter-nivel"
+          class="block text-sm font-medium text-[#2C7A7B] mb-2"
+        >
+          Filtrar por nivel:
+        </label>
+        <select
+          id="filter-nivel"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#38A169] bg-white"
+        >
+          <option value="">Todos los niveles</option>
+          <!-- Las opciones se llenarán dinámicamente -->
+        </select>
+      </div>
+
+      <!-- Filtro por tipo de usuario -->
+      <div>
+        <label
+          for="filter-tipo"
+          class="block text-sm font-medium text-[#2C7A7B] mb-2"
+        >
+          Filtrar por tipo:
+        </label>
+        <select
+          id="filter-tipo"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#38A169] bg-white"
+        >
+          <option value="">Todos los tipos</option>
+          <!-- Las opciones se llenarán dinámicamente -->
+        </select>
+      </div>
+
+      <!-- Ordenar alfabéticamente -->
+      <div>
+        <label
+          for="sort-usuarios"
+          class="block text-sm font-medium text-[#2C7A7B] mb-2"
+        >
+          Ordenar por:
+        </label>
+        <select
+          id="sort-usuarios"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#38A169] bg-white"
+        >
+          <option value="original">Orden original</option>
+          <option value="nombre-asc">Nombre A-Z</option>
+          <option value="nombre-desc">Nombre Z-A</option>
+          <option value="email-asc">Email A-Z</option>
+          <option value="email-desc">Email Z-A</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Botón limpiar filtros -->
+    <div class="mt-4 flex justify-end">
+      <button
+        id="clear-filters"
+        class="bg-[#E2E8F0] hover:bg-[#CBD5E0] text-[#4A5568] py-2 px-4 rounded-md transition font-medium"
+      >
+        Limpiar filtros
+      </button>
+    </div>
   </div>
 
   <div class="overflow-x-auto rounded-lg shadow-lg">
@@ -28,13 +124,21 @@
           <th class="py-3 px-4 text-left">Acciones</th>
         </tr>
       </thead>
-      <tbody class="text-gray-700">
+      <tbody class="text-gray-700" id="usuarios-table-body">
         {% for usuario in usuarios %}
-        <tr class="border-t hover:bg-[#F7FAFC] transition">
-          <td class="py-3 px-4">{{ usuario.nombre }}</td>
-          <td class="py-3 px-4">{{ usuario.email }}</td>
-          <td class="py-3 px-4">{{ usuario.nivel_padel }}</td>
-          <td class="py-3 px-4">{{ usuario.tipo_usuario.nombre }}</td>
+        <tr
+          class="border-t hover:bg-[#F7FAFC] transition usuario-row"
+          data-usuario-nombre="{{ usuario.nombre|lower }}"
+          data-usuario-email="{{ usuario.email|lower }}"
+          data-usuario-nivel="{{ usuario.nivel_padel }}"
+          data-usuario-tipo="{{ usuario.tipo_usuario.nombre }}"
+        >
+          <td class="py-3 px-4 usuario-nombre">{{ usuario.nombre }}</td>
+          <td class="py-3 px-4 usuario-email">{{ usuario.email }}</td>
+          <td class="py-3 px-4 usuario-nivel">{{ usuario.nivel_padel }}</td>
+          <td class="py-3 px-4 usuario-tipo">
+            {{ usuario.tipo_usuario.nombre }}
+          </td>
           <td class="py-3 px-4 space-x-2">
             <a
               href="{% url 'usuario-detail' usuario.id %}"
@@ -54,7 +158,7 @@
           </td>
         </tr>
         {% empty %}
-        <tr>
+        <tr id="no-usuarios-message">
           <td colspan="5" class="py-6 px-4 text-center text-gray-500">
             No hay usuarios registrados actualmente.
           </td>
@@ -62,6 +166,188 @@
         {% endfor %}
       </tbody>
     </table>
+
+    <!-- Mensaje cuando no se encuentran resultados -->
+    <div
+      id="no-results-message"
+      class="hidden py-6 px-4 text-center text-gray-500 bg-white"
+    >
+      No se encontraron usuarios que coincidan con los filtros aplicados.
+    </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("search-usuario");
+    const filterNivel = document.getElementById("filter-nivel");
+    const filterTipo = document.getElementById("filter-tipo");
+    const sortSelect = document.getElementById("sort-usuarios");
+    const clearButton = document.getElementById("clear-filters");
+    const tableBody = document.getElementById("usuarios-table-body");
+    const usuarioCount = document.getElementById("usuario-count");
+    const noResultsMessage = document.getElementById("no-results-message");
+
+    let originalRows = Array.from(document.querySelectorAll(".usuario-row"));
+
+    // Llenar los filtros dinámicamente
+    function populateFilters() {
+      const niveles = new Set();
+      const tipos = new Set();
+
+      originalRows.forEach((row) => {
+        const nivel = row.dataset.usuarioNivel;
+        const tipo = row.dataset.usuarioTipo;
+
+        if (nivel) niveles.add(nivel);
+        if (tipo) tipos.add(tipo);
+      });
+
+      // Llenar filtro de niveles
+      Array.from(niveles)
+        .sort()
+        .forEach((nivel) => {
+          const option = document.createElement("option");
+          option.value = nivel;
+          option.textContent = nivel;
+          filterNivel.appendChild(option);
+        });
+
+      // Llenar filtro de tipos
+      Array.from(tipos)
+        .sort()
+        .forEach((tipo) => {
+          const option = document.createElement("option");
+          option.value = tipo;
+          option.textContent = tipo;
+          filterTipo.appendChild(option);
+        });
+    }
+
+    function updateUsuarioCount() {
+      const visibleRows = document.querySelectorAll(
+        '.usuario-row:not([style*="display: none"])'
+      );
+      usuarioCount.textContent = visibleRows.length;
+    }
+
+    function showNoResultsMessage(show) {
+      if (show) {
+        noResultsMessage.classList.remove("hidden");
+      } else {
+        noResultsMessage.classList.add("hidden");
+      }
+    }
+
+    function applyFilters() {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      const selectedNivel = filterNivel.value;
+      const selectedTipo = filterTipo.value;
+      let visibleCount = 0;
+
+      originalRows.forEach((row) => {
+        const usuarioNombre = row.dataset.usuarioNombre;
+        const usuarioNivel = row.dataset.usuarioNivel;
+        const usuarioTipo = row.dataset.usuarioTipo;
+
+        const matchesSearch = !searchTerm || usuarioNombre.includes(searchTerm);
+        const matchesNivel = !selectedNivel || usuarioNivel === selectedNivel;
+        const matchesTipo = !selectedTipo || usuarioTipo === selectedTipo;
+
+        if (matchesSearch && matchesNivel && matchesTipo) {
+          row.style.display = "";
+          visibleCount++;
+        } else {
+          row.style.display = "none";
+        }
+      });
+
+      showNoResultsMessage(visibleCount === 0 && originalRows.length > 0);
+      updateUsuarioCount();
+    }
+
+    function sortUsuarios() {
+      const sortValue = sortSelect.value;
+      let sortedRows = [...originalRows];
+
+      if (sortValue === "nombre-asc") {
+        sortedRows.sort((a, b) => {
+          const nameA = a
+            .querySelector(".usuario-nombre")
+            .textContent.toLowerCase();
+          const nameB = b
+            .querySelector(".usuario-nombre")
+            .textContent.toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+      } else if (sortValue === "nombre-desc") {
+        sortedRows.sort((a, b) => {
+          const nameA = a
+            .querySelector(".usuario-nombre")
+            .textContent.toLowerCase();
+          const nameB = b
+            .querySelector(".usuario-nombre")
+            .textContent.toLowerCase();
+          return nameB.localeCompare(nameA);
+        });
+      } else if (sortValue === "email-asc") {
+        sortedRows.sort((a, b) => {
+          const emailA = a
+            .querySelector(".usuario-email")
+            .textContent.toLowerCase();
+          const emailB = b
+            .querySelector(".usuario-email")
+            .textContent.toLowerCase();
+          return emailA.localeCompare(emailB);
+        });
+      } else if (sortValue === "email-desc") {
+        sortedRows.sort((a, b) => {
+          const emailA = a
+            .querySelector(".usuario-email")
+            .textContent.toLowerCase();
+          const emailB = b
+            .querySelector(".usuario-email")
+            .textContent.toLowerCase();
+          return emailB.localeCompare(emailA);
+        });
+      }
+
+      // Reorganizar las filas en el DOM
+      sortedRows.forEach((row) => {
+        tableBody.appendChild(row);
+      });
+
+      // Aplicar filtros después de ordenar
+      applyFilters();
+    }
+
+    function clearAllFilters() {
+      searchInput.value = "";
+      filterNivel.value = "";
+      filterTipo.value = "";
+      sortSelect.value = "original";
+
+      // Restaurar orden original
+      originalRows.forEach((row) => {
+        tableBody.appendChild(row);
+        row.style.display = "";
+      });
+
+      showNoResultsMessage(false);
+      updateUsuarioCount();
+    }
+
+    // Event listeners
+    searchInput.addEventListener("input", applyFilters);
+    filterNivel.addEventListener("change", applyFilters);
+    filterTipo.addEventListener("change", applyFilters);
+    sortSelect.addEventListener("change", sortUsuarios);
+    clearButton.addEventListener("click", clearAllFilters);
+
+    // Inicializar
+    populateFilters();
+    updateUsuarioCount();
+  });
+</script>
+
 {% endblock %}

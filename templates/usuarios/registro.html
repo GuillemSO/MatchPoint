@@ -1,60 +1,66 @@
 {% extends "base.html" %} {% block content %}
-<div class="flex items-center justify-center h-screen bg-green-200">
-  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
-    <h2 class="text-2xl font-bold mb-6 text-center">Registro de usuario</h2>
-    <form method="post">
-      {% csrf_token %}
-      <div class="mb-4">
-        <label class="block mb-1">Nombre</label>
-        <input
-          type="text"
-          name="nombre"
-          class="w-full border border-gray-300 rounded p-2"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label class="block mb-1">Correo electrónico</label>
-        <input
-          type="email"
-          name="email"
-          class="w-full border border-gray-300 rounded p-2"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label class="block mb-1">Contraseña</label>
-        <input
-          type="password"
-          name="contraseña"
-          class="w-full border border-gray-300 rounded p-2"
-          required
-        />
-      </div>
-      <div class="mb-6">
-        <label class="block mb-1">Tipo de usuario</label>
-        <select
-          name="tipo_usuario"
-          class="w-full border border-gray-300 rounded p-2"
-          required
+<div
+  class="flex items-center justify-center h-screen bg-cover bg-center"
+  style="background-image: url('../../static/image.jpg')"
+>
+  <div class="flex items-center justify-center h-screen w-full">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md w-40">
+      <h2 class="text-2xl font-bold mb-6 text-center">Registro de usuario</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label class="block mb-1">Nombre</label>
+          <input
+            type="text"
+            name="nombre"
+            class="w-full border border-gray-300 rounded p-2"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block mb-1">Correo electrónico</label>
+          <input
+            type="email"
+            name="email"
+            class="w-full border border-gray-300 rounded p-2"
+            required
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block mb-1">Contraseña</label>
+          <input
+            type="password"
+            name="contraseña"
+            class="w-full border border-gray-300 rounded p-2"
+            required
+          />
+        </div>
+        <div class="mb-6">
+          <label class="block mb-1">Tipo de usuario</label>
+          <select
+            name="tipo_usuario"
+            class="w-full border border-gray-300 rounded p-2"
+            required
+          >
+            <option value="admin_club">Administrador de Club</option>
+            <option value="jugador">Jugador</option>
+          </select>
+        </div>
+        <button
+          type="submit"
+          class="bg-green-600 text-white py-2 px-4 rounded w-full hover:bg-green-700"
         >
-          <option value="admin_club">Administrador de Club</option>
-          <option value="jugador">Jugador</option>
-        </select>
-      </div>
-      <button
-        type="submit"
-        class="bg-green-600 text-white py-2 px-4 rounded w-full hover:bg-green-700"
-      >
-        Registrarse
-      </button>
-      <p class="mt-4 text-center">
-        ¿Ya tienes cuenta?
-        <a href="{% url 'login' %}" class="text-blue-600 underline"
-          >Inicia sesión</a
-        >
-      </p>
-    </form>
+          Registrarse
+        </button>
+        <p class="mt-4 text-center">
+          ¿Ya tienes cuenta?
+          <a href="{% url 'login' %}" class="text-blue-600 underline"
+            >Inicia sesión</a
+          >
+        </p>
+      </form>
+    </div>
   </div>
 </div>
+
 {% endblock %}
