@@ -17,11 +17,9 @@ class AuthRedirectMiddleware:
         ]
 
     def __call__(self, request):
-        # Si accede a la raíz sin estar logueado, redirigir a login
         if request.path == '/' and not request.session.get('usuario_id'):
             return redirect('login')
         
-        # Si está logueado y accede a login, redirigir según su rol
         if request.path == '/login/' and request.session.get('usuario_id'):
             return self.redirect_by_user_type(request)
         
@@ -30,7 +28,7 @@ class AuthRedirectMiddleware:
     
     def redirect_by_user_type(self, request):
         """Redirigir según el tipo de usuario"""
-        # IMPORTACIÓN TARDÍA - dentro del método
+       
         from .usuarios.models import Usuario
         try:
             usuario_id = request.session.get('usuario_id')

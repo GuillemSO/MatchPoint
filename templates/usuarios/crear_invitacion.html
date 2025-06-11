@@ -1,0 +1,125 @@
+{% extends "base_home.html" %} {% block content %}
+
+<div
+  class="w-full min-h-screen bg-cover bg-center flex items-center justify-center"
+  style="background-image: url('/static/image.jpg')"
+>
+  <div
+    class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md backdrop-blur-sm bg-opacity-90"
+  >
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-bold text-[#0F172A] mb-2">
+        Crear Nueva Invitación
+      </h2>
+      <p class="text-[#4A5568] text-sm">
+        Invita a otros jugadores a tus partidos
+      </p>
+    </div>
+
+    <!-- Mensajes -->
+    {% if messages %}
+    <div class="mb-4">
+      {% for message in messages %}
+      <div
+        class="p-3 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700 border border-red-300{% elif message.tags == 'success' %}bg-green-100 text-green-700 border border-green-300{% else %}bg-blue-100 text-blue-700 border border-blue-300{% endif %}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+
+      <!-- Email del invitado -->
+      <div>
+        <label
+          for="invitado_email"
+          class="block text-sm font-medium text-[#0F172A] mb-2"
+        >
+          Email del jugador a invitar
+        </label>
+        <input
+          type="email"
+          id="invitado_email"
+          name="invitado_email"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3182CE] focus:border-transparent"
+          placeholder="ejemplo@correo.com"
+        />
+      </div>
+
+      <!-- Selección de partido -->
+      <div>
+        <label
+          for="partido_id"
+          class="block text-sm font-medium text-[#0F172A] mb-2"
+        >
+          Seleccionar partido
+        </label>
+        <select
+          id="partido_id"
+          name="partido_id"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3182CE] focus:border-transparent"
+        >
+          <option value="">Selecciona un partido</option>
+          {% for partido in partidos_disponibles %}
+          <option value="{{ partido.id }}">
+            {{ partido.fecha }} - {{ partido.hora_inicio }} | {{
+            partido.club.nombre }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      {% if not partidos_disponibles %}
+      <div
+        class="bg-yellow-100 border border-yellow-300 text-yellow-700 p-3 rounded-lg text-sm"
+      >
+        <p class="font-semibold">No tienes partidos disponibles</p>
+        <p>
+          Necesitas crear un partido primero para poder invitar a otros
+          jugadores.
+        </p>
+      </div>
+      {% endif %}
+
+      <!-- Botones -->
+      <div class="flex space-x-3 pt-4">
+        <button
+          type="submit"
+          {%
+          if
+          not
+          partidos_disponibles
+          %}disabled{%
+          endif
+          %}
+          class="flex-1 bg-[#3182CE] hover:bg-[#2B6CB0] disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg font-medium transition"
+        >
+          Enviar Invitación
+        </button>
+        <a
+          href="{% url 'home_jugador' %}"
+          class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg font-medium transition text-center"
+        >
+          Cancelar
+        </a>
+      </div>
+    </form>
+
+    <!-- Información adicional -->
+    <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <h4 class="font-semibold text-blue-800 mb-2">ℹ️ Información</h4>
+      <ul class="text-sm text-blue-700 space-y-1">
+        <li>• El jugador recibirá una notificación por email</li>
+        <li>• Podrá aceptar o rechazar la invitación</li>
+        <li>• Solo puedes invitar a partidos que hayas creado</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

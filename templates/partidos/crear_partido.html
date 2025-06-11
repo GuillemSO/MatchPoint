@@ -1,0 +1,189 @@
+{% extends "base_home.html" %} {% block content %}
+
+<div
+  class="w-full min-h-screen bg-cover bg-center flex items-center justify-center"
+  style="background-image: url('/static/image.jpg')"
+>
+  <div
+    class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl backdrop-blur-sm bg-opacity-90"
+  >
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-[#0F172A] mb-2">
+        Crear Nuevo Partido
+      </h2>
+      <p class="text-[#4A5568] uppercase tracking-wide">
+        Reserva tu pista de pádel
+      </p>
+    </div>
+
+    <!-- Formulario -->
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Fecha -->
+      <div>
+        <label
+          for="fecha"
+          class="block text-sm font-semibold text-[#0F172A] mb-2"
+        >
+          Fecha del Partido
+        </label>
+        <input
+          type="date"
+          id="fecha"
+          name="fecha"
+          required
+          min="{{ fecha_minima }}"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3182CE] focus:border-transparent"
+        />
+      </div>
+
+      <!-- Horarios -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label
+            for="hora_inicio"
+            class="block text-sm font-semibold text-[#0F172A] mb-2"
+          >
+            Hora de Inicio
+          </label>
+          <input
+            type="time"
+            id="hora_inicio"
+            name="hora_inicio"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3182CE] focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label
+            for="hora_fin"
+            class="block text-sm font-semibold text-[#0F172A] mb-2"
+          >
+            Hora de Fin
+          </label>
+          <input
+            type="time"
+            id="hora_fin"
+            name="hora_fin"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3182CE] focus:border-transparent"
+          />
+        </div>
+      </div>
+
+      <!-- Club -->
+      <div>
+        <label
+          for="club_id"
+          class="block text-sm font-semibold text-[#0F172A] mb-2"
+        >
+          Club
+        </label>
+        <select
+          id="club_id"
+          name="club_id"
+          required
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3182CE] focus:border-transparent"
+        >
+          <option value="">Selecciona un club</option>
+          {% for club in clubs %}
+          <option value="{{ club.id }}">{{ club.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Pista -->
+      <div>
+        <label
+          for="pista_id"
+          class="block text-sm font-semibold text-[#0F172A] mb-2"
+        >
+          Pista
+        </label>
+        <select
+          id="pista_id"
+          name="pista_id"
+          required
+          disabled
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3182CE] focus:border-transparent disabled:bg-gray-100"
+        >
+          <option value="">Primero selecciona un club</option>
+        </select>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex space-x-4 pt-4">
+        <button
+          type="submit"
+          class="flex-1 bg-[#3182CE] hover:bg-[#2B6CB0] text-white py-3 px-6 rounded-lg font-medium transition"
+        >
+          Crear Partido
+        </button>
+
+        <a
+          href="{% url 'home_jugador' %}"
+          class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-medium transition text-center"
+        >
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const clubSelect = document.getElementById("club_id");
+    const pistaSelect = document.getElementById("pista_id");
+    const fechaInput = document.getElementById("fecha");
+
+    // Establecer fecha mínima como hoy
+    const today = new Date().toISOString().split("T")[0];
+    fechaInput.setAttribute("min", today);
+
+    // Manejar cambio de club
+    clubSelect.addEventListener("change", function () {
+      const clubId = this.value;
+
+      // Limpiar y deshabilitar select de pistas
+      pistaSelect.innerHTML = '<option value="">Cargando pistas...</option>';
+      pistaSelect.disabled = true;
+
+      if (clubId) {
+        // Hacer petición AJAX para obtener pistas
+        fetch(`/obtener-pistas-club/${clubId}/`)
+          .then((response) => response.json())
+          .then((data) => {
+            pistaSelect.innerHTML =
+              '<option value="">Selecciona una pista</option>';
+
+            if (data.success && data.pistas.length > 0) {
+              data.pistas.forEach((pista) => {
+                const option = document.createElement("option");
+                option.value = pista.id;
+                option.textContent = pista.nombre;
+                pistaSelect.appendChild(option);
+              });
+              pistaSelect.disabled = false;
+            } else {
+              pistaSelect.innerHTML =
+                '<option value="">No hay pistas disponibles</option>';
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            pistaSelect.innerHTML =
+              '<option value="">Error al cargar pistas</option>';
+          });
+      } else {
+        pistaSelect.innerHTML =
+          '<option value="">Primero selecciona un club</option>';
+      }
+    });
+  });
+</script>
+
+{% endblock %}
